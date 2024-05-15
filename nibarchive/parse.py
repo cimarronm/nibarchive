@@ -173,6 +173,7 @@ class NIBArchiveParser:
 
     def parse_objects(self, fp: io.IOBase, offset: int) -> int:
         for _ in range(self.archive.header.object_count):
+            startOffset = offset
             cni, byte_cnt = varint(fp)
             offset += byte_cnt
             vi, byte_cnt = varint(fp)
@@ -180,7 +181,7 @@ class NIBArchiveParser:
             vc, byte_cnt = varint(fp)
             offset += byte_cnt
 
-            obj = NIBObject(cni, vi, vc)
+            obj = NIBObject(cni, vi, vc, startOffset)
             self.archive.objects.append(obj)
         return offset
 
@@ -211,11 +212,12 @@ class NIBArchiveParser:
 
     def parse_values(self, fp: io.IOBase, offset: int) -> int:
         for _ in range(self.archive.header.value_count):
+            startOffset = offset
             key_index, bytes_count = varint(fp)
             offset += bytes_count + 1
             value_type = NIBValueType.from_byte(*fp.read(1))
 
-            value = NIBValue(key_index, value_type)
+            value = NIBValue(key_index, value_type, startOffset)
             attr_name = f"_parse_{value_type.name.lower()}"
             if value_type != NIBValueType.NIL:
                 if hasattr(self, attr_name):

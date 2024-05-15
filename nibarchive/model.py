@@ -167,11 +167,14 @@ class NIBValue:
     :type key_index: int
     :param type: Type of the value.
     :type type: :class`NIBValueType`
+    :param file_offset: Byte offset of value within file
+    :type file_offset: int
     :param data: Data associated with the value (default: None).
     :type data: Any
     """
     key_index: int  # varint
     type: NIBValueType
+    file_offset: int
     data: Any = None
 
 
@@ -187,10 +190,13 @@ class NIBObject:
     :type values_index: int
     :param value_count: Number of associated values (varint).
     :type value_count: int
+    :param file_offset: Byte offset of object within file
+    :type file_offset: int
     """
     class_name_index: int  # varint
     values_index: int  # varint
     value_count: int  # varint
+    file_offset: int
 
 
 @dataclass
